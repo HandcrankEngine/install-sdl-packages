@@ -5,5 +5,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: HandcrankEngine/install-sdl-packages@v0.0.1
+      - uses: HandcrankEngine/install-sdl-packages@v0.0.2
 ```
