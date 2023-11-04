@@ -42,7 +42,7 @@ runs:
         make
         sudo make install
 
-    - if: ${{ inputs.CACHE_SDL == 'true' }} && steps.cache-sdl.outputs.cache-hit != 'true'
+    - if: ${{ inputs.CACHE_SDL != 'false' }} && steps.cache-sdl.outputs.cache-hit != 'true'
       name: Store SDL2 Cache
       uses: actions/cache/save@v3
       with:
@@ -71,7 +71,7 @@ runs:
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-2.28.5/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    - if: ${{ inputs.CACHE_SDL_IMAGE == 'true' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
+    - if: ${{ inputs.CACHE_SDL_IMAGE != 'false' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
       name: Store SDL2_image Cache
       uses: actions/cache/save@v3
       with:
@@ -100,7 +100,7 @@ runs:
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-2.28.5/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    - if: ${{ inputs.CACHE_SDL_TTF == 'true' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
+    - if: ${{ inputs.CACHE_SDL_TTF != 'false' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
       name: Store SDL2 Cache
       uses: actions/cache/save@v3
       with:
