@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
 
