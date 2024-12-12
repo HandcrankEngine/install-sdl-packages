@@ -23,7 +23,7 @@ runs:
   using: composite
   steps:
     - name: Restore SDL2 Cache
-      uses: actions/cache/restore@v4.0.2
+      uses: actions/cache/restore@v4.2.0
       id: cache-sdl
       with:
         path: /tmp/.sdl/SDL2-2.30.10
@@ -44,13 +44,13 @@ runs:
 
     - if: ${{ inputs.CACHE_SDL != 'false' }} && steps.cache-sdl.outputs.cache-hit != 'true'
       name: Store SDL2 Cache
-      uses: actions/cache/save@v4.0.2
+      uses: actions/cache/save@v4.2.0
       with:
         path: /tmp/.sdl/SDL2-2.30.10
         key: sdl2-${{ runner.os }}-sdl
 
     - name: Restore SDL2_image Cache
-      uses: actions/cache/restore@v4.0.2
+      uses: actions/cache/restore@v4.2.0
       id: cache-sdl-image
       with:
         path: /tmp/.sdl/SDL2_image-2.8.2
@@ -73,13 +73,13 @@ runs:
 
     - if: ${{ inputs.CACHE_SDL_IMAGE != 'false' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
       name: Store SDL2_image Cache
-      uses: actions/cache/save@v4.0.2
+      uses: actions/cache/save@v4.2.0
       with:
         path: /tmp/.sdl/SDL2_image-2.8.2
         key: sdl2-${{ runner.os }}-sdl-image
 
     - name: Restore SDL2_ttf Cache
-      uses: actions/cache/restore@v4.0.2
+      uses: actions/cache/restore@v4.2.0
       id: cache-sdl-ttf
       with:
         path: /tmp/.sdl/SDL2_ttf-2.22.0
@@ -102,7 +102,7 @@ runs:
 
     - if: ${{ inputs.CACHE_SDL_TTF != 'false' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
       name: Store SDL2 Cache
-      uses: actions/cache/save@v4.0.2
+      uses: actions/cache/save@v4.2.0
       with:
         path: /tmp/.sdl/SDL2_ttf-2.22.0
         key: sdl2-${{ runner.os }}-sdl-ttf
