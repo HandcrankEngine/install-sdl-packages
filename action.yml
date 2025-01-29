@@ -26,19 +26,19 @@ runs:
       uses: actions/cache/restore@v4.2.0
       id: cache-sdl
       with:
-        path: /tmp/.sdl/SDL2-2.30.10
+        path: /tmp/.sdl/SDL2-2.30.11
         key: sdl2-${{ runner.os }}-sdl
 
     - if: steps.cache-sdl.outputs.cache-hit != 'true'
-      name: Install SDL2-2.30.10
+      name: Install SDL2-2.30.11
       shell: bash
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -LO https://github.com/libsdl-org/SDL/releases/download/release-2.30.10/SDL2-2.30.10.tar.gz
-        tar -xzvf SDL2-2.30.10.tar.gz
-        cd SDL2-2.30.10
-        ./configure --prefix=/tmp/.sdl/SDL2-2.30.10
+        curl -LO https://github.com/libsdl-org/SDL/releases/download/release-2.30.11/SDL2-2.30.11.tar.gz
+        tar -xzvf SDL2-2.30.11.tar.gz
+        cd SDL2-2.30.11
+        ./configure --prefix=/tmp/.sdl/SDL2-2.30.11
         make
         sudo make install
 
@@ -46,14 +46,14 @@ runs:
       name: Store SDL2 Cache
       uses: actions/cache/save@v4.2.0
       with:
-        path: /tmp/.sdl/SDL2-2.30.10
+        path: /tmp/.sdl/SDL2-2.30.11
         key: sdl2-${{ runner.os }}-sdl
 
     - name: Restore SDL2_image Cache
       uses: actions/cache/restore@v4.2.0
       id: cache-sdl-image
       with:
-        path: /tmp/.sdl/SDL2_image-2.8.3
+        path: /tmp/.sdl/SDL2_image-2.8.4
         key: sdl2-${{ runner.os }}-sdl-image
 
     - if: steps.cache-sdl-image.outputs.cache-hit != 'true'
@@ -62,27 +62,27 @@ runs:
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -LO https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.3/SDL2_image-2.8.3.tar.gz
-        tar -xzvf SDL2_image-2.8.3.tar.gz
-        cd SDL2_image-2.8.3
-        ./configure --prefix=/tmp/.sdl/SDL2_image-2.8.3
+        curl -LO https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.4/SDL2_image-2.8.4.tar.gz
+        tar -xzvf SDL2_image-2.8.4.tar.gz
+        cd SDL2_image-2.8.4
+        ./configure --prefix=/tmp/.sdl/SDL2_image-2.8.4
         make
         sudo make install
       env:
-        PKG_CONFIG_PATH: /tmp/.sdl/SDL2-2.30.10/lib/pkgconfig:$PKG_CONFIG_PATH
+        PKG_CONFIG_PATH: /tmp/.sdl/SDL2-2.30.11/lib/pkgconfig:$PKG_CONFIG_PATH
 
     - if: ${{ inputs.CACHE_SDL_IMAGE != 'false' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
       name: Store SDL2_image Cache
       uses: actions/cache/save@v4.2.0
       with:
-        path: /tmp/.sdl/SDL2_image-2.8.3
+        path: /tmp/.sdl/SDL2_image-2.8.4
         key: sdl2-${{ runner.os }}-sdl-image
 
     - name: Restore SDL2_ttf Cache
       uses: actions/cache/restore@v4.2.0
       id: cache-sdl-ttf
       with:
-        path: /tmp/.sdl/SDL2_ttf-2.22.0
+        path: /tmp/.sdl/SDL2_ttf-2.24.0
         key: sdl2-${{ runner.os }}-sdl-ttf
 
     - if: steps.cache-sdl-ttf.outputs.cache-hit != 'true'
@@ -91,18 +91,18 @@ runs:
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -LO https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.22.0/SDL2_ttf-2.22.0.tar.gz
-        tar -xzvf SDL2_ttf-2.22.0.tar.gz
-        cd SDL2_ttf-2.22.0
-        ./configure --prefix=/tmp/.sdl/SDL2_ttf-2.22.0
+        curl -LO https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz
+        tar -xzvf SDL2_ttf-2.24.0.tar.gz
+        cd SDL2_ttf-2.24.0
+        ./configure --prefix=/tmp/.sdl/SDL2_ttf-2.24.0
         make
         sudo make install
       env:
-        PKG_CONFIG_PATH: /tmp/.sdl/SDL2-2.30.10/lib/pkgconfig:$PKG_CONFIG_PATH
+        PKG_CONFIG_PATH: /tmp/.sdl/SDL2-2.30.11/lib/pkgconfig:$PKG_CONFIG_PATH
 
     - if: ${{ inputs.CACHE_SDL_TTF != 'false' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
       name: Store SDL2 Cache
       uses: actions/cache/save@v4.2.0
       with:
-        path: /tmp/.sdl/SDL2_ttf-2.22.0
+        path: /tmp/.sdl/SDL2_ttf-2.24.0
         key: sdl2-${{ runner.os }}-sdl-ttf
