@@ -50,7 +50,7 @@ runs:
         path: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}
         key: sdl2-${{ inputs.SDL2_VERSION }}-${{ runner.os }}
 
-    - if: ${{ inputs.SDL2_VERSION != '' }} && steps.cache-sdl.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_VERSION != '' && steps.cache-sdl.outputs.cache-hit != 'true' }}
       name: Install SDL2
       shell: bash
       run: |
@@ -63,7 +63,7 @@ runs:
         make
         sudo make install
 
-    - if: ${{ inputs.SDL2_VERSION != '' }} && ${{ inputs.CACHE_SDL != 'false' }} && steps.cache-sdl.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_VERSION != '' && inputs.CACHE_SDL != 'false' && steps.cache-sdl.outputs.cache-hit != 'true' }}
       name: Store SDL2 Cache
       uses: actions/cache/save@v4.2.0
       with:
@@ -78,7 +78,7 @@ runs:
         path: /tmp/.sdl/SDL2_image-${{ inputs.SDL2_IMAGE_VERSION }}
         key: sdl2-image-${{ inputs.SDL2_IMAGE_VERSION }}-${{ runner.os }}
 
-    - if: ${{ inputs.SDL2_IMAGE_VERSION != '' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_IMAGE_VERSION != '' && steps.cache-sdl-image.outputs.cache-hit != 'true' }}
       name: Install SDL2_image
       shell: bash
       run: |
@@ -93,7 +93,7 @@ runs:
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    - if: ${{ inputs.SDL2_IMAGE_VERSION != '' }} && ${{ inputs.CACHE_SDL_IMAGE != 'false' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_IMAGE_VERSION != '' && inputs.CACHE_SDL_IMAGE != 'false' && steps.cache-sdl-image.outputs.cache-hit != 'true' }}
       name: Store SDL2_image Cache
       uses: actions/cache/save@v4.2.0
       with:
@@ -108,7 +108,7 @@ runs:
         path: /tmp/.sdl/SDL2_ttf-${{ inputs.SDL2_TTF_VERSION }}
         key: sdl2-ttf-${{ inputs.SDL2_TTF_VERSION }}-${{ runner.os }}
 
-    - if: ${{ inputs.SDL2_TTF_VERSION != '' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_TTF_VERSION != '' && steps.cache-sdl-ttf.outputs.cache-hit != 'true' }}
       name: Install SDL2_ttf
       shell: bash
       run: |
@@ -123,7 +123,7 @@ runs:
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    - if: ${{ inputs.SDL2_TTF_VERSION != '' }} && ${{ inputs.CACHE_SDL_TTF != 'false' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_TTF_VERSION != '' && inputs.CACHE_SDL_TTF != 'false' && steps.cache-sdl-ttf.outputs.cache-hit != 'true' }}
       name: Store SDL2_ttf Cache
       uses: actions/cache/save@v4.2.0
       with:
@@ -138,7 +138,7 @@ runs:
         path: /tmp/.sdl/SDL2_mixer-${{ inputs.SDL2_MIXER_VERSION }}
         key: sdl2-mixer-${{ inputs.SDL2_MIXER_VERSION }}-${{ runner.os }}
 
-    - if: ${{ inputs.SDL2_MIXER_VERSION != '' }} && steps.cache-sdl-mixer.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_MIXER_VERSION != '' && steps.cache-sdl-mixer.outputs.cache-hit != 'true' }}
       name: Install SDL2_mixer
       shell: bash
       run: |
@@ -153,7 +153,7 @@ runs:
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
 
-    - if: ${{ inputs.SDL2_MIXER_VERSION != '' }} && ${{ inputs.CACHE_SDL_MIXER != 'false' }} && steps.cache-sdl-mixer.outputs.cache-hit != 'true'
+    - if: ${{ inputs.SDL2_MIXER_VERSION != '' && inputs.CACHE_SDL_MIXER != 'false' && steps.cache-sdl-mixer.outputs.cache-hit != 'true' }}
       name: Store SDL2_mixer Cache
       uses: actions/cache/save@v4.2.0
       with:
