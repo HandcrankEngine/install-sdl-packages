@@ -135,7 +135,7 @@ runs:
       uses: actions/cache/restore@v4.2.0
       id: cache-sdl-mixer
       with:
-        path: /tmp/.sdl/mixer-${{ inputs.SDL2_MIXER_VERSION }}
+        path: /tmp/.sdl/SDL2_mixer-${{ inputs.SDL2_MIXER_VERSION }}
         key: sdl2-mixer-${{ inputs.SDL2_MIXER_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL2_MIXER_VERSION != '' }} && steps.cache-sdl-mixer.outputs.cache-hit != 'true'
