@@ -60,8 +60,8 @@ runs:
         tar -xzvf SDL2-${{ inputs.SDL2_VERSION }}.tar.gz
         cd SDL2-${{ inputs.SDL2_VERSION }}
         ./configure --prefix=/tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}
-        make
-        sudo make install
+        make -j$(nproc)
+        make install
 
     - if: ${{ inputs.SDL2_VERSION != '' && inputs.CACHE_SDL != 'false' && steps.cache-sdl.outputs.cache-hit != 'true' }}
       name: Store SDL2 Cache
@@ -88,8 +88,8 @@ runs:
         tar -xzvf SDL2_image-${{ inputs.SDL2_IMAGE_VERSION }}.tar.gz
         cd SDL2_image-${{ inputs.SDL2_IMAGE_VERSION }}
         ./configure --prefix=/tmp/.sdl/SDL2_image-${{ inputs.SDL2_IMAGE_VERSION }}
-        make
-        sudo make install
+        make -j$(nproc)
+        make install
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
 
@@ -118,8 +118,8 @@ runs:
         tar -xzvf SDL2_ttf-${{ inputs.SDL2_TTF_VERSION }}.tar.gz
         cd SDL2_ttf-${{ inputs.SDL2_TTF_VERSION }}
         ./configure --prefix=/tmp/.sdl/SDL2_ttf-${{ inputs.SDL2_TTF_VERSION }}
-        make
-        sudo make install
+        make -j$(nproc)
+        make install
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
 
@@ -148,8 +148,8 @@ runs:
         tar -xzvf SDL2_mixer-${{ inputs.SDL2_MIXER_VERSION }}.tar.gz
         cd SDL2_mixer-${{ inputs.SDL2_MIXER_VERSION }}
         ./configure --prefix=/tmp/.sdl/SDL2_mixer-${{ inputs.SDL2_MIXER_VERSION }}
-        make
-        sudo make install
+        make -j$(nproc)
+        make install
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL2-${{ inputs.SDL2_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
 
