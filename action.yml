@@ -9,7 +9,7 @@ inputs:
   SDL2_VERSION:
     description: "SDL2 version"
     required: false
-    default: "2.32.4"
+    default: "2.32.6"
   CACHE_SDL:
     description: "If the action should cache the SDL files."
     required: false
