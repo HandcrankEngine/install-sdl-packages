@@ -79,7 +79,7 @@ runs:
         key: sdl2-image-${{ inputs.SDL2_IMAGE_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL2_IMAGE_VERSION != '' }} && steps.cache-sdl-image.outputs.cache-hit != 'true'
-      name: Install SDL_image
+      name: Install SDL2_image
       shell: bash
       run: |
         mkdir -p /tmp/.sdl
@@ -109,7 +109,7 @@ runs:
         key: sdl2-ttf-${{ inputs.SDL2_TTF_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL2_TTF_VERSION != '' }} && steps.cache-sdl-ttf.outputs.cache-hit != 'true'
-      name: Install SDL_ttf
+      name: Install SDL2_ttf
       shell: bash
       run: |
         mkdir -p /tmp/.sdl
@@ -139,7 +139,7 @@ runs:
         key: sdl2-mixer-${{ inputs.SDL2_MIXER_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL2_MIXER_VERSION != '' }} && steps.cache-sdl-mixer.outputs.cache-hit != 'true'
-      name: Install SDL_mixer
+      name: Install SDL2_mixer
       shell: bash
       run: |
         mkdir -p /tmp/.sdl
