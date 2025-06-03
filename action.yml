@@ -56,7 +56,14 @@ runs:
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -L https://github.com/libsdl-org/SDL/releases/download/release-${{ inputs.SDL_VERSION }}/SDL2-${{ inputs.SDL_VERSION }}.tar.gz > SDL.tar.gz
+        if [[ "${{ inputs.SDL_VERSION }}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL/releases/download/release-${{ inputs.SDL_VERSION }}/SDL2-${{ inputs.SDL_VERSION }}.tar.gz > SDL.tar.gz
+        elif [[ "${{ inputs.SDL_VERSION }}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL/releases/download/release-${{ inputs.SDL_VERSION }}/SDL3-${{ inputs.SDL_VERSION }}.tar.gz > SDL.tar.gz
+        else
+          echo "Unsupported SDL version: ${{ inputs.SDL_VERSION }}"
+          exit 1
+        fi
         mkdir SDL-${{ inputs.SDL_VERSION }}
         tar -xzvf SDL.tar.gz --strip-components=1 -C SDL-${{ inputs.SDL_VERSION }}
         cd SDL-${{ inputs.SDL_VERSION }}
@@ -85,7 +92,14 @@ runs:
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${{ inputs.SDL_IMAGE_VERSION }}/SDL2_image-${{ inputs.SDL_IMAGE_VERSION }}.tar.gz > SDL_image.tar.gz
+        if [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${{ inputs.SDL_IMAGE_VERSION }}/SDL2_image-${{ inputs.SDL_IMAGE_VERSION }}.tar.gz > SDL_image.tar.gz
+        elif [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${{ inputs.SDL_IMAGE_VERSION }}/SDL3_image-${{ inputs.SDL_IMAGE_VERSION }}.tar.gz > SDL_image.tar.gz
+        else
+          echo "Unsupported SDL_image version: ${{ inputs.SDL_IMAGE_VERSION }}"
+          exit 1
+        fi
         mkdir SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
         tar -xzvf SDL_image.tar.gz --strip-components=1 -C SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
         cd SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
@@ -116,7 +130,14 @@ runs:
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${{ inputs.SDL_TTF_VERSION }}/SDL2_ttf-${{ inputs.SDL_TTF_VERSION }}.tar.gz > SDL_ttf.tar.gz
+        if [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${{ inputs.SDL_TTF_VERSION }}/SDL2_ttf-${{ inputs.SDL_TTF_VERSION }}.tar.gz > SDL_ttf.tar.gz
+        elif [[ "${{ inputs.SDL_TTF_VERSION }}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${{ inputs.SDL_TTF_VERSION }}/SDL3_ttf-${{ inputs.SDL_TTF_VERSION }}.tar.gz > SDL_ttf.tar.gz
+        else
+          echo "Unsupported SDL_ttf version: ${{ inputs.SDL_TTF_VERSION }}"
+          exit 1
+        fi
         mkdir SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
         tar -xzvf SDL_ttf.tar.gz --strip-components=1 -C SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
         cd SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
@@ -147,7 +168,14 @@ runs:
       run: |
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
-        curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${{ inputs.SDL_MIXER_VERSION }}/SDL2_mixer-${{ inputs.SDL_MIXER_VERSION }}.tar.gz > SDL_mixer.tar.gz
+        if [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${{ inputs.SDL_MIXER_VERSION }}/SDL2_mixer-${{ inputs.SDL_MIXER_VERSION }}.tar.gz > SDL_mixer.tar.gz
+        elif [[ "${{ inputs.SDL_MIXER_VERSION }}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${{ inputs.SDL_MIXER_VERSION }}/SDL3_mixer-${{ inputs.SDL_MIXER_VERSION }}.tar.gz > SDL_mixer.tar.gz
+        else
+          echo "Unsupported SDL_mixer version: ${{ inputs.SDL_MIXER_VERSION }}"
+          exit 1
+        fi
         mkdir SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
         tar -xzvf SDL_mixer.tar.gz --strip-components=1 -C SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
         cd SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
