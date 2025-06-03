@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       SDL2_VERSION:
-        description: "SDL2 version"
+        description: "SDL version"
         required: false
         default: "2.32.6"
       CACHE_SDL:
@@ -25,7 +25,7 @@ on:
         required: false
         default: "true"
       SDL2_IMAGE_VERSION:
-        description: "SDL2_image version"
+        description: "SDL_image version"
         required: false
         default: "2.8.8"
       CACHE_SDL_IMAGE:
@@ -33,7 +33,7 @@ on:
         required: false
         default: "true"
       SDL2_TTF_VERSION:
-        description: "SDL2_ttf version"
+        description: "SDL_ttf version"
         required: false
         default: "2.24.0"
       CACHE_SDL_TTF:
@@ -41,7 +41,7 @@ on:
         required: false
         default: "true"
       SDL2_MIXER_VERSION:
-        description: "SDL2_mixer version"
+        description: "SDL_mixer version"
         required: false
         default: "2.8.1"
       CACHE_SDL_MIXER:
