@@ -42,6 +42,12 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Install CMake
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake
+
     - if: ${{ inputs.SDL_VERSION != '' }}
       name: Restore SDL Cache
       uses: actions/cache/restore@v4.2.0
@@ -67,7 +73,16 @@ runs:
         mkdir SDL-${{ inputs.SDL_VERSION }}
         tar -xzvf SDL.tar.gz --strip-components=1 -C SDL-${{ inputs.SDL_VERSION }}
         cd SDL-${{ inputs.SDL_VERSION }}
-        ./configure --prefix=/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}
+        if [[ "${{ inputs.SDL_VERSION }}" == 2* ]]; then
+          ./configure --prefix=/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}
+        elif [[ "${{ inputs.SDL_VERSION }}" == 3* ]]; then
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }} -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED=ON -DSDL_STATIC=ON
+        else
+          echo "Unsupported SDL version: ${{ inputs.SDL_VERSION }}"
+          exit 1
+        fi
         make -j$(nproc)
         make install
 
@@ -103,11 +118,21 @@ runs:
         mkdir SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
         tar -xzvf SDL_image.tar.gz --strip-components=1 -C SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
         cd SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
-        ./configure --prefix=/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
+        if [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
+          ./configure --prefix=/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
+        elif [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 3* ]]; then
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }} -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED=ON -DSDL_STATIC=ON
+        else
+          echo "Unsupported SDL_image version: ${{ inputs.SDL_IMAGE_VERSION }}"
+          exit 1
+        fi
         make -j$(nproc)
         make install
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
+        CMAKE_PREFIX_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}:$CMAKE_PREFIX_PATH
 
     - if: ${{ inputs.SDL_IMAGE_VERSION != '' && inputs.CACHE_SDL_IMAGE != 'false' && steps.cache-sdl-image.outputs.cache-hit != 'true' }}
       name: Store SDL_image Cache
@@ -141,11 +166,21 @@ runs:
         mkdir SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
         tar -xzvf SDL_ttf.tar.gz --strip-components=1 -C SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
         cd SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
-        ./configure --prefix=/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
+        if [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+          ./configure --prefix=/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
+        elif [[ "${{ inputs.SDL_TTF_VERSION }}" == 3* ]]; then
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }} -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED=ON -DSDL_STATIC=ON
+        else
+          echo "Unsupported SDL_ttf version: ${{ inputs.SDL_TTF_VERSION }}"
+          exit 1
+        fi
         make -j$(nproc)
         make install
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
+        CMAKE_PREFIX_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}:$CMAKE_PREFIX_PATH
 
     - if: ${{ inputs.SDL_TTF_VERSION != '' && inputs.CACHE_SDL_TTF != 'false' && steps.cache-sdl-ttf.outputs.cache-hit != 'true' }}
       name: Store SDL_ttf Cache
@@ -179,11 +214,21 @@ runs:
         mkdir SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
         tar -xzvf SDL_mixer.tar.gz --strip-components=1 -C SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
         cd SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
-        ./configure --prefix=/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
+        if [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
+          ./configure --prefix=/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
+        elif [[ "${{ inputs.SDL_MIXER_VERSION }}" == 3* ]]; then
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }} -DCMAKE_BUILD_TYPE=Release -DSDL_SHARED=ON -DSDL_STATIC=ON
+        else
+          echo "Unsupported SDL_mixer version: ${{ inputs.SDL_MIXER_VERSION }}"
+          exit 1
+        fi
         make -j$(nproc)
         make install
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:$PKG_CONFIG_PATH
+        CMAKE_PREFIX_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}:$CMAKE_PREFIX_PATH
 
     - if: ${{ inputs.SDL_MIXER_VERSION != '' && inputs.CACHE_SDL_MIXER != 'false' && steps.cache-sdl-mixer.outputs.cache-hit != 'true' }}
       name: Store SDL_mixer Cache
