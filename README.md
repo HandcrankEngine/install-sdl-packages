@@ -21,8 +21,8 @@ jobs:
     steps:
       - uses: HandcrankEngine/install-sdl-packages@v0.2.0
         with:
-          SDL2_VERSION: "2.32.6"
-          SDL2_IMAGE_VERSION: "2.8.8"
-          SDL2_TTF_VERSION: "2.24.0"
-          SDL2_MIXER_VERSION: "2.8.1"
+          SDL_VERSION: "2.32.6"
+          SDL_IMAGE_VERSION: "2.8.8"
+          SDL_TTF_VERSION: "2.24.0"
+          SDL_MIXER_VERSION: "2.8.1"
 ```
