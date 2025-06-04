@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: HandcrankEngine/install-sdl-packages@v0.2.0
+      - uses: HandcrankEngine/install-sdl-packages@v0.3.0
 ```
 
 ### Specific Version Numbers
@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: HandcrankEngine/install-sdl-packages@v0.2.0
+      - uses: HandcrankEngine/install-sdl-packages@v0.3.0
         with:
           SDL_VERSION: "2.32.8"
           SDL_IMAGE_VERSION: "2.8.8"
