@@ -69,3 +69,11 @@ jobs:
           CACHE_SDL_TTF: ${{ inputs.CACHE_SDL_TTF || 'true' }}
           SDL_MIXER_VERSION: ${{ inputs.SDL_MIXER_VERSION || '2.8.1' }}
           CACHE_SDL_MIXER: ${{ inputs.CACHE_SDL_MIXER || 'true' }}
+
+      - name: Test directories exist
+        run: |
+          ls /tmp/.sdl/
+          ls /tmp/.sdl/SDL-${{ inputs.SDL_VERSION || '2.32.8' }}/
+          ls /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION || '2.8.8' }}/
+          ls /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION || '2.24.0' }}/
+          ls /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION || '2.8.1' }}/
