@@ -19,7 +19,7 @@ on:
       SDL_VERSION:
         description: "SDL version"
         required: false
-        default: "2.32.8"
+        default: "2.32.10"
       CACHE_SDL:
         description: "If the action should cache the SDL files."
         required: false
@@ -62,7 +62,7 @@ jobs:
         uses: ./
         with:
           CACHE_SDL: ${{ inputs.CACHE_SDL || 'true' }}
-          SDL_VERSION: ${{ inputs.SDL_VERSION || '2.32.8' }}
+          SDL_VERSION: ${{ inputs.SDL_VERSION || '2.32.10' }}
           SDL_IMAGE_VERSION: ${{ inputs.SDL_IMAGE_VERSION || '2.8.8' }}
           CACHE_SDL_IMAGE: ${{ inputs.CACHE_SDL_IMAGE || 'true' }}
           SDL_TTF_VERSION: ${{ inputs.SDL_TTF_VERSION || '2.24.0' }}
@@ -73,7 +73,7 @@ jobs:
       - name: Test directories exist
         run: |
           ls /tmp/.sdl/
-          ls /tmp/.sdl/SDL-${{ inputs.SDL_VERSION || '2.32.8' }}/
+          ls /tmp/.sdl/SDL-${{ inputs.SDL_VERSION || '2.32.10' }}/
           ls /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION || '2.8.8' }}/
           ls /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION || '2.24.0' }}/
           ls /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION || '2.8.1' }}/
