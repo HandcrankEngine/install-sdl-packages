@@ -1,0 +1,10 @@
+{
+  "overrides": [
+    {
+      "files": "*.yml, *.md",
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}
