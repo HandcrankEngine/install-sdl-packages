@@ -61,7 +61,7 @@ runs:
 
     - if: ${{ inputs.SDL_VERSION != '' }}
       name: Restore SDL Cache
-      uses: actions/cache/restore@v4.2.0
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       id: cache-sdl
       with:
         path: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}
@@ -99,14 +99,14 @@ runs:
 
     - if: ${{ inputs.SDL_VERSION != '' && inputs.CACHE_SDL != 'false' && steps.cache-sdl.outputs.cache-hit != 'true' }}
       name: Store SDL Cache
-      uses: actions/cache/save@v4.2.0
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}
         key: sdl-${{ inputs.SDL_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL_IMAGE_VERSION != '' }}
       name: Restore SDL_image Cache
-      uses: actions/cache/restore@v4.2.0
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       id: cache-sdl-image
       with:
         path: /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
@@ -147,14 +147,14 @@ runs:
 
     - if: ${{ inputs.SDL_IMAGE_VERSION != '' && inputs.CACHE_SDL_IMAGE != 'false' && steps.cache-sdl-image.outputs.cache-hit != 'true' }}
       name: Store SDL_image Cache
-      uses: actions/cache/save@v4.2.0
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
         key: sdl-image-${{ inputs.SDL_IMAGE_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL_TTF_VERSION != '' }}
       name: Restore SDL_ttf Cache
-      uses: actions/cache/restore@v4.2.0
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       id: cache-sdl-ttf
       with:
         path: /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
@@ -195,14 +195,14 @@ runs:
 
     - if: ${{ inputs.SDL_TTF_VERSION != '' && inputs.CACHE_SDL_TTF != 'false' && steps.cache-sdl-ttf.outputs.cache-hit != 'true' }}
       name: Store SDL_ttf Cache
-      uses: actions/cache/save@v4.2.0
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
         key: sdl-ttf-${{ inputs.SDL_TTF_VERSION }}-${{ runner.os }}
 
     - if: ${{ inputs.SDL_MIXER_VERSION != '' }}
       name: Restore SDL_mixer Cache
-      uses: actions/cache/restore@v4.2.0
+      uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       id: cache-sdl-mixer
       with:
         path: /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
@@ -243,7 +243,7 @@ runs:
 
     - if: ${{ inputs.SDL_MIXER_VERSION != '' && inputs.CACHE_SDL_MIXER != 'false' && steps.cache-sdl-mixer.outputs.cache-hit != 'true' }}
       name: Store SDL_mixer Cache
-      uses: actions/cache/save@v4.2.0
+      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
         key: sdl-mixer-${{ inputs.SDL_MIXER_VERSION }}-${{ runner.os }}
