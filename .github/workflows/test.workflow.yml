@@ -14,43 +14,21 @@ on:
     paths:
       - "*.yml"
       - ".github/workflows/*.yml"
-  workflow_dispatch:
-    inputs:
-      SDL_VERSION:
-        description: "SDL version"
-        required: false
-        default: "2.32.10"
-      CACHE_SDL:
-        description: "If the action should cache the SDL files."
-        required: false
-        default: "true"
-      SDL_IMAGE_VERSION:
-        description: "SDL_image version"
-        required: false
-        default: "2.8.8"
-      CACHE_SDL_IMAGE:
-        description: "If the action should cache the SDL_image files."
-        required: false
-        default: "true"
-      SDL_TTF_VERSION:
-        description: "SDL_ttf version"
-        required: false
-        default: "2.24.0"
-      CACHE_SDL_TTF:
-        description: "If the action should cache the SDL_ttf files."
-        required: false
-        default: "true"
-      SDL_MIXER_VERSION:
-        description: "SDL_mixer version"
-        required: false
-        default: "2.8.1"
-      CACHE_SDL_MIXER:
-        description: "If the action should cache the SDL_mixer files."
-        required: false
-        default: "true"
 
 jobs:
   test:
+    strategy:
+      matrix:
+        include:
+          - SDL_VERSION: 2.32.10
+            SDL_IMAGE_VERSION: 2.8.8
+            SDL_TTF_VERSION: 2.24.0
+            SDL_MIXER_VERSION: 2.8.1
+          - SDL_VERSION: 3.4.4
+            SDL_IMAGE_VERSION: 3.4.2
+            SDL_TTF_VERSION: 3.2.2
+            SDL_MIXER_VERSION: 3.2.0
+
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
 
@@ -61,19 +39,15 @@ jobs:
       - name: Install SDL dependencies
         uses: ./
         with:
-          CACHE_SDL: ${{ inputs.CACHE_SDL || 'true' }}
-          SDL_VERSION: ${{ inputs.SDL_VERSION || '2.32.10' }}
-          SDL_IMAGE_VERSION: ${{ inputs.SDL_IMAGE_VERSION || '2.8.8' }}
-          CACHE_SDL_IMAGE: ${{ inputs.CACHE_SDL_IMAGE || 'true' }}
-          SDL_TTF_VERSION: ${{ inputs.SDL_TTF_VERSION || '2.24.0' }}
-          CACHE_SDL_TTF: ${{ inputs.CACHE_SDL_TTF || 'true' }}
-          SDL_MIXER_VERSION: ${{ inputs.SDL_MIXER_VERSION || '2.8.1' }}
-          CACHE_SDL_MIXER: ${{ inputs.CACHE_SDL_MIXER || 'true' }}
+          SDL_VERSION: ${{ matrix.SDL_VERSION }}
+          SDL_IMAGE_VERSION: ${{ matrix.SDL_IMAGE_VERSION }}
+          SDL_TTF_VERSION: ${{ matrix.SDL_TTF_VERSION }}
+          SDL_MIXER_VERSION: ${{ matrix.SDL_MIXER_VERSION }}
 
       - name: Test directories exist
         run: |
           ls /tmp/.sdl/
-          ls /tmp/.sdl/SDL-${{ inputs.SDL_VERSION || '2.32.10' }}/
-          ls /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION || '2.8.8' }}/
-          ls /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION || '2.24.0' }}/
-          ls /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION || '2.8.1' }}/
+          ls /tmp/.sdl/SDL-${{ matrix.SDL_VERSION }}/
+          ls /tmp/.sdl/SDL_image-${{ matrix.SDL_IMAGE_VERSION }}/
+          ls /tmp/.sdl/SDL_ttf-${{ matrix.SDL_TTF_VERSION }}/
+          ls /tmp/.sdl/SDL_mixer-${{ matrix.SDL_MIXER_VERSION }}/
