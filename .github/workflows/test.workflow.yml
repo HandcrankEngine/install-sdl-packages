@@ -21,13 +21,13 @@ jobs:
       matrix:
         include:
           - SDL_VERSION: 2.32.10
-            SDL_IMAGE_VERSION: 2.8.8
+            SDL_IMAGE_VERSION: 2.8.12
             SDL_TTF_VERSION: 2.24.0
-            SDL_MIXER_VERSION: 2.8.1
-          - SDL_VERSION: 3.4.4
-            SDL_IMAGE_VERSION: 3.4.2
+            SDL_MIXER_VERSION: 2.8.2
+          - SDL_VERSION: 3.4.8
+            SDL_IMAGE_VERSION: 3.4.4
             SDL_TTF_VERSION: 3.2.2
-            SDL_MIXER_VERSION: 3.2.0
+            SDL_MIXER_VERSION: 3.2.2
 
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
