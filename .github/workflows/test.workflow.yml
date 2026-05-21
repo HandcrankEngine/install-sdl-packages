@@ -44,10 +44,41 @@ jobs:
           SDL_TTF_VERSION: ${{ matrix.SDL_TTF_VERSION }}
           SDL_MIXER_VERSION: ${{ matrix.SDL_MIXER_VERSION }}
 
+      - name: Setup Environment Variables
+        shell: bash
+        run: |
+          echo "SDL_PATH=/tmp/.sdl/SDL-${{ matrix.SDL_VERSION }}" >> $GITHUB_ENV
+          echo "SDL_IMAGE_PATH=/tmp/.sdl/SDL_image-${{ matrix.SDL_IMAGE_VERSION }}" >> $GITHUB_ENV
+          echo "SDL_TTF_PATH=/tmp/.sdl/SDL_ttf-${{ matrix.SDL_TTF_VERSION }}" >> $GITHUB_ENV
+          echo "SDL_MIXER_PATH=/tmp/.sdl/SDL_mixer-${{ matrix.SDL_MIXER_VERSION }}" >> $GITHUB_ENV
+
       - name: Test directories exist
         run: |
           ls /tmp/.sdl/
-          ls /tmp/.sdl/SDL-${{ matrix.SDL_VERSION }}/
-          ls /tmp/.sdl/SDL_image-${{ matrix.SDL_IMAGE_VERSION }}/
-          ls /tmp/.sdl/SDL_ttf-${{ matrix.SDL_TTF_VERSION }}/
-          ls /tmp/.sdl/SDL_mixer-${{ matrix.SDL_MIXER_VERSION }}/
+          ls "${SDL_PATH}"
+          ls "${SDL_IMAGE_PATH}"
+          ls "${SDL_TTF_PATH}"
+          ls "${SDL_MIXER_PATH}"
+
+      - name: Build
+        shell: bash
+        run: |
+          if [[ "${{ matrix.SDL_VERSION }}" == 2* ]]; then
+            echo "Running test build for SDL2"
+            g++ -std=c++17 -o temp-build tests/mocks/sdl2/main.cpp \
+              -I"${SDL_PATH}/include/SDL2" -L"${SDL_PATH}/lib" \
+              -I"${SDL_IMAGE_PATH}/include/SDL2" -L"${SDL_IMAGE_PATH}/lib" \
+              -I"${SDL_TTF_PATH}/include/SDL2" -L"${SDL_TTF_PATH}/lib" \
+              -I"${SDL_MIXER_PATH}/include/SDL2" -L"${SDL_MIXER_PATH}/lib" \
+              -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+            rm temp-build
+          elif [[ "${{ matrix.SDL_VERSION }}" == 3* ]]; then
+            echo "Running test build for SDL3"
+            g++ -std=c++17 -o temp-build tests/mocks/sdl3/main.cpp \
+              -I"${SDL_PATH}/include" -L"${SDL_PATH}/lib" \
+              -I"${SDL_IMAGE_PATH}/include" -L"${SDL_IMAGE_PATH}/lib" \
+              -I"${SDL_TTF_PATH}/include" -L"${SDL_TTF_PATH}/lib" \
+              -I"${SDL_MIXER_PATH}/include" -L"${SDL_MIXER_PATH}/lib" \
+              -lSDL3 -lSDL3_image -lSDL3_ttf -lSDL3_mixer
+            rm temp-build
+          fi
