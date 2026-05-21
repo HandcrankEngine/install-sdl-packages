@@ -42,7 +42,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install CMake
+    - name: Install Dependencies
       shell: bash
       run: |
         sudo apt-get update
