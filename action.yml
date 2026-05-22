@@ -359,3 +359,11 @@ runs:
       with:
         path: /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
         key: sdl-mixer-${{ inputs.SDL_MIXER_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
+
+    - name: Setup Environment Variables
+      shell: bash
+      run: |
+        echo "SDL_PATH=/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}" >> $GITHUB_ENV
+        echo "SDL_IMAGE_PATH=/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}" >> $GITHUB_ENV
+        echo "SDL_TTF_PATH=/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}" >> $GITHUB_ENV
+        echo "SDL_MIXER_PATH=/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}" >> $GITHUB_ENV

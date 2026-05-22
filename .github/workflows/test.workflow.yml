@@ -57,14 +57,6 @@ jobs:
           SDL_TTF_VERSION: ${{ matrix.SDL_TTF_VERSION }}
           SDL_MIXER_VERSION: ${{ matrix.SDL_MIXER_VERSION }}
 
-      - name: Setup Environment Variables
-        shell: bash
-        run: |
-          echo "SDL_PATH=/tmp/.sdl/SDL-${{ matrix.SDL_VERSION }}" >> $GITHUB_ENV
-          echo "SDL_IMAGE_PATH=/tmp/.sdl/SDL_image-${{ matrix.SDL_IMAGE_VERSION }}" >> $GITHUB_ENV
-          echo "SDL_TTF_PATH=/tmp/.sdl/SDL_ttf-${{ matrix.SDL_TTF_VERSION }}" >> $GITHUB_ENV
-          echo "SDL_MIXER_PATH=/tmp/.sdl/SDL_mixer-${{ matrix.SDL_MIXER_VERSION }}" >> $GITHUB_ENV
-
       - name: Test directories exist
         run: |
           ls /tmp/.sdl/
