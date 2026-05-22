@@ -65,7 +65,7 @@ runs:
 
     - if: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' }}
       name: Install Emscripten
-      uses: HandcrankEngine/install-emscripten-package@v0.1.0
+      uses: HandcrankEngine/install-emscripten-package@36cc758cb3c58a74460fa8d033120d0f2b281005 # v0.2.0
 
     - if: ${{ inputs.SDL_VERSION != '' }}
       name: Restore SDL Cache
