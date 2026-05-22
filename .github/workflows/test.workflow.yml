@@ -79,7 +79,8 @@ jobs:
                 -I"${SDL_MIXER_PATH}/include/SDL2" -L"${SDL_MIXER_PATH}/lib" \
                 -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer \
                 -s USE_FREETYPE=1 -s USE_HARFBUZZ=1 \
-                -s MAX_WEBGL_VERSION=2
+                -s MAX_WEBGL_VERSION=2 \
+                --shell-file templates/web-minimal.html
               ls build/
             elif [[ "${{ matrix.SDL_VERSION }}" == 3* ]]; then
               echo "Running test build for SDL3/Emscripten"
@@ -90,7 +91,8 @@ jobs:
                 -I"${SDL_MIXER_PATH}/include" -L"${SDL_MIXER_PATH}/lib" \
                 -lSDL3 -lSDL3_image -lSDL3_ttf -lSDL3_mixer \
                 -s USE_FREETYPE=1 -s USE_HARFBUZZ=1 \
-                -s MAX_WEBGL_VERSION=2
+                -s MAX_WEBGL_VERSION=2 \
+                --shell-file templates/web-minimal.html
               ls build/
             fi
           elif [[ "${{ matrix.SDL_VERSION }}" == 2* ]]; then
