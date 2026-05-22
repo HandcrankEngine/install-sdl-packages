@@ -6,6 +6,10 @@ branding:
   icon: upload-cloud
 
 inputs:
+  BUILD_SDL_FOR_EMSCRIPTEN:
+    description: "If the action should build the SDL packages for Emscripten."
+    required: false
+    default: "false"
   SDL_VERSION:
     description: "SDL version"
     required: false
@@ -59,13 +63,17 @@ runs:
           sudo apt-get install -y libfreetype6-dev libharfbuzz-dev
         fi
 
+    - if: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' }}
+      name: Install Emscripten
+      uses: HandcrankEngine/install-emscripten-package@36cc758cb3c58a74460fa8d033120d0f2b281005 # v0.2.0
+
     - if: ${{ inputs.SDL_VERSION != '' }}
       name: Restore SDL Cache
       uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       id: cache-sdl
       with:
         path: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}
-        key: sdl-${{ inputs.SDL_VERSION }}-${{ runner.os }}
+        key: sdl-${{ inputs.SDL_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_VERSION != '' && steps.cache-sdl.outputs.cache-hit != 'true' }}
       name: Install SDL
@@ -89,7 +97,15 @@ runs:
 
         INSTALL_PREFIX="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}"
 
-        if [[ "${{ inputs.SDL_VERSION }}" == 2* ]]; then
+        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
+          emcmake cmake -S . -B build \
+            -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DSDL_SHARED=OFF \
+            -DSDL_STATIC=ON
+          cmake --build build -j$(nproc)
+          cmake --install build
+        elif [[ "${{ inputs.SDL_VERSION }}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
@@ -97,13 +113,10 @@ runs:
           cmake -S . -B build \
             -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DSDL_SHARED=ON \
-            -DSDL_STATIC=ON
+            -DSDL3_SHARED=ON \
+            -DSDL3_STATIC=ON
           cmake --build build -j$(nproc)
           cmake --install build
-        else
-          echo "Unsupported SDL version: ${{ inputs.SDL_VERSION }}"
-          exit 1
         fi
 
     - if: ${{ inputs.SDL_VERSION != '' && inputs.CACHE_SDL != 'false' && steps.cache-sdl.outputs.cache-hit != 'true' }}
@@ -111,7 +124,7 @@ runs:
       uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}
-        key: sdl-${{ inputs.SDL_VERSION }}-${{ runner.os }}
+        key: sdl-${{ inputs.SDL_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_IMAGE_VERSION != '' }}
       name: Restore SDL_image Cache
@@ -119,7 +132,7 @@ runs:
       id: cache-sdl-image
       with:
         path: /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
-        key: sdl-image-${{ inputs.SDL_IMAGE_VERSION }}-${{ runner.os }}
+        key: sdl-image-${{ inputs.SDL_IMAGE_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_IMAGE_VERSION != '' && steps.cache-sdl-image.outputs.cache-hit != 'true' }}
       name: Install SDL_image
@@ -143,7 +156,26 @@ runs:
 
         INSTALL_PREFIX="/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}"
 
-        if [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
+        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
+          if [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
+            emcmake cmake -S . -B build \
+              -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+              -DSDL2_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL2" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DSDL2IMAGE_SAMPLES=OFF
+          else
+            emcmake cmake -S . -B build \
+              -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+              -DSDL3_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL3" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DSDL3IMAGE_SHARED=OFF \
+              -DSDL3IMAGE_BUILD_SHARED_LIBS=OFF \
+              -DSDLIMAGE_SAMPLES=OFF
+          fi
+          cmake --build build -j$(nproc)
+          cmake --install build
+        elif [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
@@ -155,9 +187,6 @@ runs:
             -DSDL3_STATIC=ON
           cmake --build build -j$(nproc)
           cmake --install build
-        else
-          echo "Unsupported SDL_image version: ${{ inputs.SDL_IMAGE_VERSION }}"
-          exit 1
         fi
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
@@ -168,7 +197,7 @@ runs:
       uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
-        key: sdl-image-${{ inputs.SDL_IMAGE_VERSION }}-${{ runner.os }}
+        key: sdl-image-${{ inputs.SDL_IMAGE_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_TTF_VERSION != '' }}
       name: Restore SDL_ttf Cache
@@ -176,7 +205,7 @@ runs:
       id: cache-sdl-ttf
       with:
         path: /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
-        key: sdl-ttf-${{ inputs.SDL_TTF_VERSION }}-${{ runner.os }}
+        key: sdl-ttf-${{ inputs.SDL_TTF_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_TTF_VERSION != '' && steps.cache-sdl-ttf.outputs.cache-hit != 'true' }}
       name: Install SDL_ttf
@@ -200,7 +229,32 @@ runs:
 
         INSTALL_PREFIX="/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}"
 
-        if [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
+          if [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+            emcmake cmake -S . -B build \
+              -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+              -DCMAKE_PREFIX_PATH="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}" \
+              -DSDL2_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL2" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DSDL2TTF_SAMPLES=OFF \
+              -DCMAKE_C_FLAGS="-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1" \
+              -DCMAKE_CXX_FLAGS="-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1" \
+              -DSDL2TTF_HARFBUZZ=ON
+          else
+            emcmake cmake -S . -B build \
+              -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+              -DSDL3_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL3" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DSDL3TTF_SHARED=OFF \
+              -DSDLTTF_SAMPLES=OFF \
+              -DCMAKE_C_FLAGS="-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1" \
+              -DCMAKE_CXX_FLAGS="-sUSE_FREETYPE=1 -sUSE_HARFBUZZ=1" \
+              -DSDL3TTF_HARFBUZZ=ON
+          fi
+          cmake --build build -j$(nproc)
+          cmake --install build
+        elif [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
@@ -212,9 +266,6 @@ runs:
             -DSDL3_STATIC=ON
           cmake --build build -j$(nproc)
           cmake --install build
-        else
-          echo "Unsupported SDL_ttf version: ${{ inputs.SDL_TTF_VERSION }}"
-          exit 1
         fi
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
@@ -225,7 +276,7 @@ runs:
       uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
-        key: sdl-ttf-${{ inputs.SDL_TTF_VERSION }}-${{ runner.os }}
+        key: sdl-ttf-${{ inputs.SDL_TTF_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_MIXER_VERSION != '' }}
       name: Restore SDL_mixer Cache
@@ -233,7 +284,7 @@ runs:
       id: cache-sdl-mixer
       with:
         path: /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
-        key: sdl-mixer-${{ inputs.SDL_MIXER_VERSION }}-${{ runner.os }}
+        key: sdl-mixer-${{ inputs.SDL_MIXER_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}
 
     - if: ${{ inputs.SDL_MIXER_VERSION != '' && steps.cache-sdl-mixer.outputs.cache-hit != 'true' }}
       name: Install SDL_mixer
@@ -257,7 +308,35 @@ runs:
 
         INSTALL_PREFIX="/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}"
 
-        if [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
+        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
+          if [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
+            emcmake cmake -S . -B build \
+              -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+              -DCMAKE_PREFIX_PATH="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}" \
+              -DSDL2_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL2" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DSDL2MIXER_SAMPLES=OFF \
+              -DSDL2MIXER_VENDORED=ON \
+              -DSDL2MIXER_OPUS=OFF \
+              -DSDL2MIXER_FLAC=OFF \
+              -DSDL2MIXER_GME=OFF \
+              -DSDL2MIXER_MOD=OFF \
+              -DSDL2MIXER_MIDI=OFF \
+              -DSDL2MIXER_VORBIS=OFF \
+              -DSDL2MIXER_WAVPACK=OFF \
+              -DSDL2MIXER_WAV=ON
+          else
+            emcmake cmake -S . -B build \
+              -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+              -DSDL3_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL3" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DSDL3MIXER_SHARED=OFF \
+              -DSDLMIXER_SAMPLES=OFF
+          fi
+          cmake --build build -j$(nproc)
+          cmake --install build
+        elif [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
@@ -269,9 +348,6 @@ runs:
             -DSDL3_STATIC=ON
           cmake --build build -j$(nproc)
           cmake --install build
-        else
-          echo "Unsupported SDL_mixer version: ${{ inputs.SDL_MIXER_VERSION }}"
-          exit 1
         fi
       env:
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
@@ -282,4 +358,4 @@ runs:
       uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       with:
         path: /tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
-        key: sdl-mixer-${{ inputs.SDL_MIXER_VERSION }}-${{ runner.os }}
+        key: sdl-mixer-${{ inputs.SDL_MIXER_VERSION }}-${{ runner.os }}${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' && '-emscripten' || '' }}

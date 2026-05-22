@@ -20,11 +20,23 @@ jobs:
     strategy:
       matrix:
         include:
-          - SDL_VERSION: 2.32.10
+          - BUILD_SDL_FOR_EMSCRIPTEN: false
+            SDL_VERSION: 2.32.10
             SDL_IMAGE_VERSION: 2.8.12
             SDL_TTF_VERSION: 2.24.0
             SDL_MIXER_VERSION: 2.8.2
-          - SDL_VERSION: 3.4.8
+          - BUILD_SDL_FOR_EMSCRIPTEN: false
+            SDL_VERSION: 3.4.8
+            SDL_IMAGE_VERSION: 3.4.4
+            SDL_TTF_VERSION: 3.2.2
+            SDL_MIXER_VERSION: 3.2.2
+          - BUILD_SDL_FOR_EMSCRIPTEN: true
+            SDL_VERSION: 2.32.10
+            SDL_IMAGE_VERSION: 2.8.12
+            SDL_TTF_VERSION: 2.24.0
+            SDL_MIXER_VERSION: 2.8.2
+          - BUILD_SDL_FOR_EMSCRIPTEN: true
+            SDL_VERSION: 3.4.8
             SDL_IMAGE_VERSION: 3.4.4
             SDL_TTF_VERSION: 3.2.2
             SDL_MIXER_VERSION: 3.2.2
@@ -39,6 +51,7 @@ jobs:
       - name: Install SDL dependencies
         uses: ./
         with:
+          BUILD_SDL_FOR_EMSCRIPTEN: ${{ matrix.BUILD_SDL_FOR_EMSCRIPTEN }}
           SDL_VERSION: ${{ matrix.SDL_VERSION }}
           SDL_IMAGE_VERSION: ${{ matrix.SDL_IMAGE_VERSION }}
           SDL_TTF_VERSION: ${{ matrix.SDL_TTF_VERSION }}
@@ -60,25 +73,48 @@ jobs:
           ls "${SDL_TTF_PATH}"
           ls "${SDL_MIXER_PATH}"
 
-      - name: Build
+      - name: Run Test Build
         shell: bash
         run: |
-          if [[ "${{ matrix.SDL_VERSION }}" == 2* ]]; then
+          mkdir -p build/
+          if [[ "${{ matrix.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
+            if [[ "${{ matrix.SDL_VERSION }}" == 2* ]]; then
+              echo "Running test build for SDL2/Emscripten"
+              emcc -std=c++17 -Os -o build/index.html tests/mocks/sdl2/main.cpp \
+                -I"${SDL_PATH}/include/SDL2" -L"${SDL_PATH}/lib" \
+                -I"${SDL_IMAGE_PATH}/include/SDL2" -L"${SDL_IMAGE_PATH}/lib" \
+                -I"${SDL_TTF_PATH}/include/SDL2" -L"${SDL_TTF_PATH}/lib" \
+                -I"${SDL_MIXER_PATH}/include/SDL2" -L"${SDL_MIXER_PATH}/lib" \
+                -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer \
+                -s USE_FREETYPE=1 -s USE_HARFBUZZ=1 \
+                -s MAX_WEBGL_VERSION=2
+              ls build/
+            elif [[ "${{ matrix.SDL_VERSION }}" == 3* ]]; then
+              echo "Running test build for SDL3/Emscripten"
+              emcc -std=c++17 -Os -o build/index.html tests/mocks/sdl3/main.cpp \
+                -I"${SDL_PATH}/include" -L"${SDL_PATH}/lib" \
+                -I"${SDL_IMAGE_PATH}/include" -L"${SDL_IMAGE_PATH}/lib" \
+                -I"${SDL_TTF_PATH}/include" -L"${SDL_TTF_PATH}/lib" \
+                -I"${SDL_MIXER_PATH}/include" -L"${SDL_MIXER_PATH}/lib" \
+                -lSDL3 -lSDL3_image -lSDL3_ttf -lSDL3_mixer \
+                -s USE_FREETYPE=1 -s USE_HARFBUZZ=1 \
+                -s MAX_WEBGL_VERSION=2
+              ls build/
+            fi
+          elif [[ "${{ matrix.SDL_VERSION }}" == 2* ]]; then
             echo "Running test build for SDL2"
-            g++ -std=c++17 -o temp-build tests/mocks/sdl2/main.cpp \
+            g++ -std=c++17 -o build/temp tests/mocks/sdl2/main.cpp \
               -I"${SDL_PATH}/include/SDL2" -L"${SDL_PATH}/lib" \
               -I"${SDL_IMAGE_PATH}/include/SDL2" -L"${SDL_IMAGE_PATH}/lib" \
               -I"${SDL_TTF_PATH}/include/SDL2" -L"${SDL_TTF_PATH}/lib" \
               -I"${SDL_MIXER_PATH}/include/SDL2" -L"${SDL_MIXER_PATH}/lib" \
               -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
-            rm temp-build
           elif [[ "${{ matrix.SDL_VERSION }}" == 3* ]]; then
             echo "Running test build for SDL3"
-            g++ -std=c++17 -o temp-build tests/mocks/sdl3/main.cpp \
+            g++ -std=c++17 -o build/temp tests/mocks/sdl3/main.cpp \
               -I"${SDL_PATH}/include" -L"${SDL_PATH}/lib" \
               -I"${SDL_IMAGE_PATH}/include" -L"${SDL_IMAGE_PATH}/lib" \
               -I"${SDL_TTF_PATH}/include" -L"${SDL_TTF_PATH}/lib" \
               -I"${SDL_MIXER_PATH}/include" -L"${SDL_MIXER_PATH}/lib" \
               -lSDL3 -lSDL3_image -lSDL3_ttf -lSDL3_mixer
-            rm temp-build
           fi
