@@ -21,21 +21,21 @@ jobs:
     steps:
       - uses: HandcrankEngine/install-sdl-packages@v0.4.1
         with:
-          SDL_VERSION: "2.32.10"
-          SDL_IMAGE_VERSION: "2.8.12"
-          SDL_TTF_VERSION: "2.24.0"
-          SDL_MIXER_VERSION: "2.8.2"
+          SDL_VERSION: "3.4.12"
+          SDL_IMAGE_VERSION: "3.4.4"
+          SDL_TTF_VERSION: "3.2.2"
+          SDL_MIXER_VERSION: "3.2.4"
 ```
 
 ## Inputs
 
-| Name                | Description                                     |  Default  |
-| :------------------ | :---------------------------------------------- | :-------: |
-| `SDL_VERSION`       | SDL version                                     | `2.32.10` |
-| `CACHE_SDL`         | If the action should cache the SDL files.       |  `true`   |
-| `SDL_IMAGE_VERSION` | SDL_image version                               | `2.8.12`  |
-| `CACHE_SDL_IMAGE`   | If the action should cache the SDL_image files. |  `true`   |
-| `SDL_TTF_VERSION`   | SDL_ttf version                                 | `2.24.0`  |
-| `CACHE_SDL_TTF`     | If the action should cache the SDL_ttf files.   |  `true`   |
-| `SDL_MIXER_VERSION` | SDL_mixer version                               |  `2.8.2`  |
-| `CACHE_SDL_MIXER`   | If the action should cache the SDL_mixer files. |  `true`   |
+| Name                | Description                                     | Default  |
+| :------------------ | :---------------------------------------------- | :------: |
+| `SDL_VERSION`       | SDL version                                     | `3.4.12` |
+| `CACHE_SDL`         | If the action should cache the SDL files.       |  `true`  |
+| `SDL_IMAGE_VERSION` | SDL_image version                               | `3.4.4`  |
+| `CACHE_SDL_IMAGE`   | If the action should cache the SDL_image files. |  `true`  |
+| `SDL_TTF_VERSION`   | SDL_ttf version                                 | `3.2.2`  |
+| `CACHE_SDL_TTF`     | If the action should cache the SDL_ttf files.   |  `true`  |
+| `SDL_MIXER_VERSION` | SDL_mixer version                               | `3.2.4`  |
+| `CACHE_SDL_MIXER`   | If the action should cache the SDL_mixer files. |  `true`  |
