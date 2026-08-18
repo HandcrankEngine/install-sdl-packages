@@ -51,7 +51,7 @@ runs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential make cmake pkg-config ninja-build
-        if [[ "${{ inputs.SDL_VERSION }}" == 3* ]]; then
+        if [[ "${SDL_VERSION}" == 3* ]]; then
           sudo apt-get install -y \
             libasound2-dev libpulse-dev libjack-dev libsndio-dev \
             libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev \
@@ -59,9 +59,12 @@ runs:
             libdrm-dev libgbm-dev libgles2-mesa-dev \
             libdbus-1-dev libibus-1.0-dev libudev-dev
         fi
-        if [[ "${{ inputs.SDL_TTF_VERSION }}" == 3* || "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+        if [[ "${SDL_TTF_VERSION}" == 3* || "${SDL_TTF_VERSION}" == 2* ]]; then
           sudo apt-get install -y libfreetype6-dev libharfbuzz-dev
         fi
+      env:
+        SDL_VERSION: ${{ inputs.SDL_VERSION }}
+        SDL_TTF_VERSION: ${{ inputs.SDL_TTF_VERSION }}
 
     - if: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN == 'true' }}
       name: Install Emscripten
@@ -82,22 +85,22 @@ runs:
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
 
-        if [[ "${{ inputs.SDL_VERSION }}" == 2* ]]; then
-          curl -L https://github.com/libsdl-org/SDL/releases/download/release-${{ inputs.SDL_VERSION }}/SDL2-${{ inputs.SDL_VERSION }}.tar.gz > SDL.tar.gz
-        elif [[ "${{ inputs.SDL_VERSION }}" == 3* ]]; then
-          curl -L https://github.com/libsdl-org/SDL/releases/download/release-${{ inputs.SDL_VERSION }}/SDL3-${{ inputs.SDL_VERSION }}.tar.gz > SDL.tar.gz
+        if [[ "${SDL_VERSION}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL/releases/download/release-${SDL_VERSION}/SDL2-${SDL_VERSION}.tar.gz > SDL.tar.gz
+        elif [[ "${SDL_VERSION}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL/releases/download/release-${SDL_VERSION}/SDL3-${SDL_VERSION}.tar.gz > SDL.tar.gz
         else
-          echo "Unsupported SDL version: ${{ inputs.SDL_VERSION }}"
+          echo "Unsupported SDL version: ${SDL_VERSION}"
           exit 1
         fi
 
-        mkdir SDL-${{ inputs.SDL_VERSION }}
-        tar -xzvf SDL.tar.gz --strip-components=1 -C SDL-${{ inputs.SDL_VERSION }}
-        cd SDL-${{ inputs.SDL_VERSION }}
+        mkdir SDL-${SDL_VERSION}
+        tar -xzvf SDL.tar.gz --strip-components=1 -C SDL-${SDL_VERSION}
+        cd SDL-${SDL_VERSION}
 
-        INSTALL_PREFIX="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}"
+        INSTALL_PREFIX="/tmp/.sdl/SDL-${SDL_VERSION}"
 
-        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
+        if [[ "${BUILD_SDL_FOR_EMSCRIPTEN}" == "true" ]]; then
           emcmake cmake -S . -B build \
             -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -105,11 +108,11 @@ runs:
             -DSDL_STATIC=ON
           cmake --build build -j$(nproc)
           cmake --install build
-        elif [[ "${{ inputs.SDL_VERSION }}" == 2* ]]; then
+        elif [[ "${SDL_VERSION}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
-        elif [[ "${{ inputs.SDL_VERSION }}" == 3* ]]; then
+        elif [[ "${SDL_VERSION}" == 3* ]]; then
           cmake -S . -B build \
             -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -118,6 +121,9 @@ runs:
           cmake --build build -j$(nproc)
           cmake --install build
         fi
+      env:
+        SDL_VERSION: ${{ inputs.SDL_VERSION }}
+        BUILD_SDL_FOR_EMSCRIPTEN: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}
 
     - if: ${{ inputs.SDL_VERSION != '' && inputs.CACHE_SDL != 'false' && steps.cache-sdl.outputs.cache-hit != 'true' }}
       name: Store SDL Cache
@@ -141,33 +147,33 @@ runs:
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
 
-        if [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
-          curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${{ inputs.SDL_IMAGE_VERSION }}/SDL2_image-${{ inputs.SDL_IMAGE_VERSION }}.tar.gz > SDL_image.tar.gz
-        elif [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 3* ]]; then
-          curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${{ inputs.SDL_IMAGE_VERSION }}/SDL3_image-${{ inputs.SDL_IMAGE_VERSION }}.tar.gz > SDL_image.tar.gz
+        if [[ "${SDL_IMAGE_VERSION}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${SDL_IMAGE_VERSION}/SDL2_image-${SDL_IMAGE_VERSION}.tar.gz > SDL_image.tar.gz
+        elif [[ "${SDL_IMAGE_VERSION}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_image/releases/download/release-${SDL_IMAGE_VERSION}/SDL3_image-${SDL_IMAGE_VERSION}.tar.gz > SDL_image.tar.gz
         else
-          echo "Unsupported SDL_image version: ${{ inputs.SDL_IMAGE_VERSION }}"
+          echo "Unsupported SDL_image version: ${SDL_IMAGE_VERSION}"
           exit 1
         fi
 
-        mkdir SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
-        tar -xzvf SDL_image.tar.gz --strip-components=1 -C SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
-        cd SDL_image-${{ inputs.SDL_IMAGE_VERSION }}
+        mkdir SDL_image-${SDL_IMAGE_VERSION}
+        tar -xzvf SDL_image.tar.gz --strip-components=1 -C SDL_image-${SDL_IMAGE_VERSION}
+        cd SDL_image-${SDL_IMAGE_VERSION}
 
-        INSTALL_PREFIX="/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}"
+        INSTALL_PREFIX="/tmp/.sdl/SDL_image-${SDL_IMAGE_VERSION}"
 
-        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
-          if [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
+        if [[ "${BUILD_SDL_FOR_EMSCRIPTEN}" == "true" ]]; then
+          if [[ "${SDL_IMAGE_VERSION}" == 2* ]]; then
             emcmake cmake -S . -B build \
               -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-              -DSDL2_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL2" \
+              -DSDL2_DIR="/tmp/.sdl/SDL-${SDL_VERSION}/lib/cmake/SDL2" \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS=OFF \
               -DSDL2IMAGE_SAMPLES=OFF
           else
             emcmake cmake -S . -B build \
               -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-              -DSDL3_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL3" \
+              -DSDL3_DIR="/tmp/.sdl/SDL-${SDL_VERSION}/lib/cmake/SDL3" \
               -DCMAKE_BUILD_TYPE=Release \
               -DSDL3IMAGE_SHARED=OFF \
               -DSDL3IMAGE_BUILD_SHARED_LIBS=OFF \
@@ -175,11 +181,11 @@ runs:
           fi
           cmake --build build -j$(nproc)
           cmake --install build
-        elif [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 2* ]]; then
+        elif [[ "${SDL_IMAGE_VERSION}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
-        elif [[ "${{ inputs.SDL_IMAGE_VERSION }}" == 3* ]]; then
+        elif [[ "${SDL_IMAGE_VERSION}" == 3* ]]; then
           cmake -S . -B build \
             -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -189,6 +195,9 @@ runs:
           cmake --install build
         fi
       env:
+        SDL_VERSION: ${{ inputs.SDL_VERSION }}
+        SDL_IMAGE_VERSION: ${{ inputs.SDL_IMAGE_VERSION }}
+        BUILD_SDL_FOR_EMSCRIPTEN: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
         CMAKE_PREFIX_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}:$CMAKE_PREFIX_PATH
 
@@ -214,27 +223,27 @@ runs:
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
 
-        if [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
-          curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${{ inputs.SDL_TTF_VERSION }}/SDL2_ttf-${{ inputs.SDL_TTF_VERSION }}.tar.gz > SDL_ttf.tar.gz
-        elif [[ "${{ inputs.SDL_TTF_VERSION }}" == 3* ]]; then
-          curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${{ inputs.SDL_TTF_VERSION }}/SDL3_ttf-${{ inputs.SDL_TTF_VERSION }}.tar.gz > SDL_ttf.tar.gz
+        if [[ "${SDL_TTF_VERSION}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${SDL_TTF_VERSION}/SDL2_ttf-${SDL_TTF_VERSION}.tar.gz > SDL_ttf.tar.gz
+        elif [[ "${SDL_TTF_VERSION}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_ttf/releases/download/release-${SDL_TTF_VERSION}/SDL3_ttf-${SDL_TTF_VERSION}.tar.gz > SDL_ttf.tar.gz
         else
-          echo "Unsupported SDL_ttf version: ${{ inputs.SDL_TTF_VERSION }}"
+          echo "Unsupported SDL_ttf version: ${SDL_TTF_VERSION}"
           exit 1
         fi
 
-        mkdir SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
-        tar -xzvf SDL_ttf.tar.gz --strip-components=1 -C SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
-        cd SDL_ttf-${{ inputs.SDL_TTF_VERSION }}
+        mkdir SDL_ttf-${SDL_TTF_VERSION}
+        tar -xzvf SDL_ttf.tar.gz --strip-components=1 -C SDL_ttf-${SDL_TTF_VERSION}
+        cd SDL_ttf-${SDL_TTF_VERSION}
 
-        INSTALL_PREFIX="/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}"
+        INSTALL_PREFIX="/tmp/.sdl/SDL_ttf-${SDL_TTF_VERSION}"
 
-        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
-          if [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+        if [[ "${BUILD_SDL_FOR_EMSCRIPTEN}" == "true" ]]; then
+          if [[ "${SDL_TTF_VERSION}" == 2* ]]; then
             emcmake cmake -S . -B build \
               -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-              -DCMAKE_PREFIX_PATH="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}" \
-              -DSDL2_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL2" \
+              -DCMAKE_PREFIX_PATH="/tmp/.sdl/SDL-${SDL_VERSION}" \
+              -DSDL2_DIR="/tmp/.sdl/SDL-${SDL_VERSION}/lib/cmake/SDL2" \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS=OFF \
               -DSDL2TTF_SAMPLES=OFF \
@@ -244,7 +253,7 @@ runs:
           else
             emcmake cmake -S . -B build \
               -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-              -DSDL3_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL3" \
+              -DSDL3_DIR="/tmp/.sdl/SDL-${SDL_VERSION}/lib/cmake/SDL3" \
               -DCMAKE_BUILD_TYPE=Release \
               -DSDL3TTF_SHARED=OFF \
               -DSDLTTF_SAMPLES=OFF \
@@ -254,11 +263,11 @@ runs:
           fi
           cmake --build build -j$(nproc)
           cmake --install build
-        elif [[ "${{ inputs.SDL_TTF_VERSION }}" == 2* ]]; then
+        elif [[ "${SDL_TTF_VERSION}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
-        elif [[ "${{ inputs.SDL_TTF_VERSION }}" == 3* ]]; then
+        elif [[ "${SDL_TTF_VERSION}" == 3* ]]; then
           cmake -S . -B build \
             -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -268,6 +277,9 @@ runs:
           cmake --install build
         fi
       env:
+        SDL_VERSION: ${{ inputs.SDL_VERSION }}
+        SDL_TTF_VERSION: ${{ inputs.SDL_TTF_VERSION }}
+        BUILD_SDL_FOR_EMSCRIPTEN: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
         CMAKE_PREFIX_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}:$CMAKE_PREFIX_PATH
 
@@ -293,27 +305,27 @@ runs:
         mkdir -p /tmp/.sdl
         cd /tmp/.sdl
 
-        if [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
-          curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${{ inputs.SDL_MIXER_VERSION }}/SDL2_mixer-${{ inputs.SDL_MIXER_VERSION }}.tar.gz > SDL_mixer.tar.gz
-        elif [[ "${{ inputs.SDL_MIXER_VERSION }}" == 3* ]]; then
-          curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${{ inputs.SDL_MIXER_VERSION }}/SDL3_mixer-${{ inputs.SDL_MIXER_VERSION }}.tar.gz > SDL_mixer.tar.gz
+        if [[ "${SDL_MIXER_VERSION}" == 2* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${SDL_MIXER_VERSION}/SDL2_mixer-${SDL_MIXER_VERSION}.tar.gz > SDL_mixer.tar.gz
+        elif [[ "${SDL_MIXER_VERSION}" == 3* ]]; then
+          curl -L https://github.com/libsdl-org/SDL_mixer/releases/download/release-${SDL_MIXER_VERSION}/SDL3_mixer-${SDL_MIXER_VERSION}.tar.gz > SDL_mixer.tar.gz
         else
-          echo "Unsupported SDL_mixer version: ${{ inputs.SDL_MIXER_VERSION }}"
+          echo "Unsupported SDL_mixer version: ${SDL_MIXER_VERSION}"
           exit 1
         fi
 
-        mkdir SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
-        tar -xzvf SDL_mixer.tar.gz --strip-components=1 -C SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
-        cd SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}
+        mkdir SDL_mixer-${SDL_MIXER_VERSION}
+        tar -xzvf SDL_mixer.tar.gz --strip-components=1 -C SDL_mixer-${SDL_MIXER_VERSION}
+        cd SDL_mixer-${SDL_MIXER_VERSION}
 
-        INSTALL_PREFIX="/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}"
+        INSTALL_PREFIX="/tmp/.sdl/SDL_mixer-${SDL_MIXER_VERSION}"
 
-        if [[ "${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}" == "true" ]]; then
-          if [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
+        if [[ "${BUILD_SDL_FOR_EMSCRIPTEN}" == "true" ]]; then
+          if [[ "${SDL_MIXER_VERSION}" == 2* ]]; then
             emcmake cmake -S . -B build \
               -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-              -DCMAKE_PREFIX_PATH="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}" \
-              -DSDL2_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL2" \
+              -DCMAKE_PREFIX_PATH="/tmp/.sdl/SDL-${SDL_VERSION}" \
+              -DSDL2_DIR="/tmp/.sdl/SDL-${SDL_VERSION}/lib/cmake/SDL2" \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS=OFF \
               -DSDL2MIXER_SAMPLES=OFF \
@@ -329,18 +341,18 @@ runs:
           else
             emcmake cmake -S . -B build \
               -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-              -DSDL3_DIR="/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/cmake/SDL3" \
+              -DSDL3_DIR="/tmp/.sdl/SDL-${SDL_VERSION}/lib/cmake/SDL3" \
               -DCMAKE_BUILD_TYPE=Release \
               -DSDL3MIXER_SHARED=OFF \
               -DSDLMIXER_SAMPLES=OFF
           fi
           cmake --build build -j$(nproc)
           cmake --install build
-        elif [[ "${{ inputs.SDL_MIXER_VERSION }}" == 2* ]]; then
+        elif [[ "${SDL_MIXER_VERSION}" == 2* ]]; then
           ./configure --prefix="${INSTALL_PREFIX}"
           make -j$(nproc)
           make install
-        elif [[ "${{ inputs.SDL_MIXER_VERSION }}" == 3* ]]; then
+        elif [[ "${SDL_MIXER_VERSION}" == 3* ]]; then
           cmake -S . -B build \
             -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -350,6 +362,9 @@ runs:
           cmake --install build
         fi
       env:
+        SDL_VERSION: ${{ inputs.SDL_VERSION }}
+        SDL_MIXER_VERSION: ${{ inputs.SDL_MIXER_VERSION }}
+        BUILD_SDL_FOR_EMSCRIPTEN: ${{ inputs.BUILD_SDL_FOR_EMSCRIPTEN }}
         PKG_CONFIG_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
         CMAKE_PREFIX_PATH: /tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}:$CMAKE_PREFIX_PATH
 
@@ -363,7 +378,12 @@ runs:
     - name: Setup Environment Variables
       shell: bash
       run: |
-        echo "SDL_PATH=/tmp/.sdl/SDL-${{ inputs.SDL_VERSION }}" >> $GITHUB_ENV
-        echo "SDL_IMAGE_PATH=/tmp/.sdl/SDL_image-${{ inputs.SDL_IMAGE_VERSION }}" >> $GITHUB_ENV
-        echo "SDL_TTF_PATH=/tmp/.sdl/SDL_ttf-${{ inputs.SDL_TTF_VERSION }}" >> $GITHUB_ENV
-        echo "SDL_MIXER_PATH=/tmp/.sdl/SDL_mixer-${{ inputs.SDL_MIXER_VERSION }}" >> $GITHUB_ENV
+        echo "SDL_PATH=/tmp/.sdl/SDL-${SDL_VERSION}" >> $GITHUB_ENV
+        echo "SDL_IMAGE_PATH=/tmp/.sdl/SDL_image-${SDL_IMAGE_VERSION}" >> $GITHUB_ENV
+        echo "SDL_TTF_PATH=/tmp/.sdl/SDL_ttf-${SDL_TTF_VERSION}" >> $GITHUB_ENV
+        echo "SDL_MIXER_PATH=/tmp/.sdl/SDL_mixer-${SDL_MIXER_VERSION}" >> $GITHUB_ENV
+      env:
+        SDL_VERSION: ${{ inputs.SDL_VERSION }}
+        SDL_IMAGE_VERSION: ${{ inputs.SDL_IMAGE_VERSION }}
+        SDL_TTF_VERSION: ${{ inputs.SDL_TTF_VERSION }}
+        SDL_MIXER_VERSION: ${{ inputs.SDL_MIXER_VERSION }}
