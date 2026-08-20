@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: HandcrankEngine/install-sdl-packages@v0.4.1
         with:
-          SDL_VERSION: "3.4.12"
+          SDL_VERSION: "3.4.14"
           SDL_IMAGE_VERSION: "3.4.4"
           SDL_TTF_VERSION: "3.2.2"
           SDL_MIXER_VERSION: "3.2.4"
@@ -31,7 +31,7 @@ jobs:
 
 | Name                | Description                                     | Default  |
 | :------------------ | :---------------------------------------------- | :------: |
-| `SDL_VERSION`       | SDL version                                     | `3.4.12` |
+| `SDL_VERSION`       | SDL version                                     | `3.4.14` |
 | `CACHE_SDL`         | If the action should cache the SDL files.       |  `true`  |
 | `SDL_IMAGE_VERSION` | SDL_image version                               | `3.4.4`  |
 | `CACHE_SDL_IMAGE`   | If the action should cache the SDL_image files. |  `true`  |

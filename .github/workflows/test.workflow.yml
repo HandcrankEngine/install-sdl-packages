@@ -30,20 +30,20 @@ jobs:
             SDL_TTF_VERSION: 2.24.0
             SDL_MIXER_VERSION: 2.8.2
           - BUILD_SDL_FOR_EMSCRIPTEN: false
-            SDL_VERSION: 3.4.8
+            SDL_VERSION: 3.4.14
             SDL_IMAGE_VERSION: 3.4.4
             SDL_TTF_VERSION: 3.2.2
-            SDL_MIXER_VERSION: 3.2.2
+            SDL_MIXER_VERSION: 3.2.4
           - BUILD_SDL_FOR_EMSCRIPTEN: true
             SDL_VERSION: 2.32.10
             SDL_IMAGE_VERSION: 2.8.12
             SDL_TTF_VERSION: 2.24.0
             SDL_MIXER_VERSION: 2.8.2
           - BUILD_SDL_FOR_EMSCRIPTEN: true
-            SDL_VERSION: 3.4.8
+            SDL_VERSION: 3.4.14
             SDL_IMAGE_VERSION: 3.4.4
             SDL_TTF_VERSION: 3.2.2
-            SDL_MIXER_VERSION: 3.2.2
+            SDL_MIXER_VERSION: 3.2.4
 
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
