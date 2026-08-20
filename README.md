@@ -29,13 +29,15 @@ jobs:
 
 ## Inputs
 
-| Name                | Description                                     | Default  |
-| :------------------ | :---------------------------------------------- | :------: |
-| `SDL_VERSION`       | SDL version                                     | `3.4.14` |
-| `CACHE_SDL`         | If the action should cache the SDL files.       |  `true`  |
-| `SDL_IMAGE_VERSION` | SDL_image version                               | `3.4.4`  |
-| `CACHE_SDL_IMAGE`   | If the action should cache the SDL_image files. |  `true`  |
-| `SDL_TTF_VERSION`   | SDL_ttf version                                 | `3.2.2`  |
-| `CACHE_SDL_TTF`     | If the action should cache the SDL_ttf files.   |  `true`  |
-| `SDL_MIXER_VERSION` | SDL_mixer version                               | `3.2.4`  |
-| `CACHE_SDL_MIXER`   | If the action should cache the SDL_mixer files. |  `true`  |
+| Name                | Description                                      | Default  |
+| :------------------ | :----------------------------------------------- | :------: |
+| `EMSDK_VERSION`     | Emscripten version                               | `6.0.7`  |
+| `CACHE_EMSCRIPTEN`  | If the action should cache the Emscripten files. |  `true`  |
+| `SDL_VERSION`       | SDL version                                      | `3.4.14` |
+| `CACHE_SDL`         | If the action should cache the SDL files.        |  `true`  |
+| `SDL_IMAGE_VERSION` | SDL_image version                                | `3.4.4`  |
+| `CACHE_SDL_IMAGE`   | If the action should cache the SDL_image files.  |  `true`  |
+| `SDL_TTF_VERSION`   | SDL_ttf version                                  | `3.2.2`  |
+| `CACHE_SDL_TTF`     | If the action should cache the SDL_ttf files.    |  `true`  |
+| `SDL_MIXER_VERSION` | SDL_mixer version                                | `3.2.4`  |
+| `CACHE_SDL_MIXER`   | If the action should cache the SDL_mixer files.  |  `true`  |
